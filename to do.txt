@@ -1,0 +1,3 @@
+// add support on kangi lookoup
+// and menu with options
+// add picture to chrome 
