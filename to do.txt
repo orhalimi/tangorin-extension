@@ -1,3 +1,4 @@
 // add support on kangi lookoup
 // and menu with options
-// add picture to chrome 
+// move the textarea inside the app
+// make the card creator fixable according to user choice
