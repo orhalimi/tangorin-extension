@@ -1,0 +1,11 @@
+Display tangorin example sentence in Anki friendly format.
+
+For Japanese learner.
+
+On http://tangorin.com/examples/* you will have a new red button near each example sentence. Clicking on it will find the searched word in it and create a three cards format.
+
+The first format will include the question and the sentence
+The second format will include the sentence with anki furigana format (without the searched word).
+The third format will include the word, word hiragana, and the translation of the word and the exampled sentence.
+
+GitHub: https://github.com/orhalimi/tangorin-extension-
