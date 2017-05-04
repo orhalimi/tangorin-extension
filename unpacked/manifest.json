@@ -2,8 +2,8 @@
     "manifest_version": 2,
     "name": "Tangorin - Anki card Creator (Unofficial)",
     "description": "This extension display the data in the example page in a way which will fit to japanese anki cards",
-    "version": "0.9.1",
-    "version_name": "0.9.1 Alpha",
+    "version": "0.9.3",
+    "version_name": "0.9.3 Alpha",
     "icons": {
         "128": "icon128.png",
         "48": "icon48.png"
@@ -24,5 +24,5 @@
         }
         ],
     "author": "Or Halimi"
-    
+
 }

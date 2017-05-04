@@ -37,68 +37,76 @@ function clear_data() {
   searchInput_with_furigana = searchInput;
 }
 
+
+function kanjiParser(item) {
+  /* if got kanji, get it with the furigana
+  else get the word only
+  kanji - the kanji
+  tail - the rest of the word without kanji
+  kanji_furigana - the furigana on to pf the word*/
+  var full_word;
+  var kanji;
+  var tail;
+  // if it has a kanji
+  if (item.getElementsByTagName("ruby")[0]) {
+    kanji = item.getElementsByTagName("rb")[0].innerText;
+    tail = item.innerText.replace(item.getElementsByTagName("ruby")[0].innerText, "");
+    kanji_furigana = item.getElementsByTagName("rt")[0].innerText;
+    sentence_without_furigana += kanji + tail;
+    if ((kanji + tail) == searchInput) {
+      full_word = kanji + tail;
+      sentence_with_furigana += full_word;
+    } else {
+      sentence_with_furigana += " " + kanji + "[" + kanji_furigana + "]" + tail;
+    }
+  } else {
+    full_word = item.innerText;
+    sentence_without_furigana += full_word;
+    sentence_with_furigana += full_word;
+  }
+  return full_word;
+}
+
+
+function furiganaParser(kana_items) {
+  // get translate and word hiragana for the asked word
+  var all_furigana = "";
+  for (i = 0; i < kana_items.length; i++) {
+    var furigana = kana_items[i].getElementsByTagName("rb")[0].innerText;
+    // if search is not kanji we dont need the furigana
+    if (furigana == searchInput) {
+      continue;
+    } else if (i > 0) {
+      all_furigana += " · ";
+    }
+    all_furigana += furigana;
+  }
+  if (all_furigana != "") {
+    searchInput_with_furigana += "[" + all_furigana + "]";
+  }
+}
+
+
 function get_data() {
   clear_data();
   entry = this.parentElement;
   if (!searchInput) {
     console.log("please insert something to search");
   } else {
-    // seperate components
     sentence_translate = entry.getElementsByClassName("ex-dd ex-en")[0].innerText;
     var raw_sentence = entry.getElementsByClassName("ex-dt")[0];
     var found_searched_word = false;
     for (i = 0; i < raw_sentence.children.length; i = i + 1) {
-      var full_word;
-      var kanji
-      var tail
-      item = raw_sentence.children[i];
-      //if got kanji, get it with the furigana
-      if (item.getElementsByTagName("ruby")[0]) {
-        //The kanji
-        kanji = item.getElementsByTagName("rb")[0].innerText;
-        //get the string outside of ruby tag
-        tail = item.innerText.replace(item.getElementsByTagName("ruby")[0].innerText, "");
-        // The hiragana
-        kanji_furigana = item.getElementsByTagName("rt")[0].innerText;
-        sentence_without_furigana += kanji + tail;
-        if ((kanji + tail) == searchInput) {
-          sentence_with_furigana += kanji + tail;
-        } else {
-          sentence_with_furigana += " " + kanji + "[" + kanji_furigana + "]" + tail;
-        }
-      } else {
-        //else get the word only
-        full_word = item.innerText;
-        sentence_without_furigana += full_word;
-        sentence_with_furigana += full_word;
-      }
+      var parsedWord = kanjiParser(raw_sentence.children[i]);
       // get translate and word hiragana for the asked word
-      if (!found_searched_word && (searchInput == (kanji + tail) || searchInput == full_word)) {
-        var searchInput_furigana = "";
+      if (!found_searched_word && searchInput == parsedWord) {
         found_searched_word = true;
-        item.click();
-        ///get element translation
+        raw_sentence.children[i].click();
         setTimeout(function () {
-          //get hiragana
           inline_entry = entry.getElementsByClassName("inline-entry")[0];
-          translation_blocks = inline_entry.getElementsByClassName("kana")[0].getElementsByTagName("ruby");
-          for (i = 0; i < translation_blocks.length; i++) {
-            if (i > 0) {
-              searchInput_furigana += " · ";
-            }
-            var furi = translation_blocks[i].getElementsByTagName("rb")[0].innerText;
-            // if search is not kanji we dont need the kana
-            if (furi == searchInput) {
-              continue;
-            }
-            searchInput_furigana += translation_blocks[i].getElementsByTagName("rb")[0].innerText;
-          }
-
-
-          if (searchInput_furigana != "") {
-            searchInput_with_furigana += "[" + searchInput_furigana + "]";
-          }
-
+          kana_items = inline_entry.getElementsByClassName("kana")[0].getElementsByTagName("ruby");
+          //get all hiraganas writing for the specific word
+          furiganaParser(kana_items);
           //get translation
           translation = inline_entry.getElementsByTagName("dd")[0].getElementsByTagName("ol")[0].children;
           for (var i = 0; i < translation.length; i++) {
@@ -106,18 +114,11 @@ function get_data() {
             if (sentence_translate.slice(-1) != ";") {
               searchInput_translate += ";"
             }
-
-
           }
           var allKanji = inline_entry.getElementsByClassName("stlh");
           allKanji[0].click();
           setTimeout(getKanjiProncAndMeaning, 1600, allKanji, 0);
-
-
-        }, 800);
-
-
-
+        }, 900);
       }
     }
     setTimeout(print_results, 1500);
@@ -148,8 +149,8 @@ function getKanjiProncAndMeaning(allKanji, indexNum) {
   }
   newline = " \n";
   a_textArea.value += newline + kanji + " - " + kanji_pronces.join("    ") + newline + kanji_translations.join(";  ");
-  if(indexNum <  allKanji.length) {
-    indexNum ++;
+  if (indexNum < allKanji.length) {
+    indexNum++;
     allKanji[indexNum].click();
     setTimeout(getKanjiProncAndMeaning, 1200, allKanji, indexNum);
   }
