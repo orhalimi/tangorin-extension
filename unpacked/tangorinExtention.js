@@ -1,6 +1,6 @@
 //no results will get only the word
-// make the code cleaner
-// create a picture for it in google ext lib
+//dinamic popup inside the browser with the text areas
+// costum card creation
 
 var entrie = document.getElementsByClassName("entry");
 var entry;
@@ -12,6 +12,7 @@ var sentence_without_furigana;
 var sentence_with_furigana;
 var sentence_translate;
 var kanji_with_pronce;
+var newline = " \n"; //now line in text area workd only with space
 
 function set_buttons() {
   for (j = 0; j < entrie.length; j++) {
@@ -37,8 +38,7 @@ function clear_data() {
   searchInput_with_furigana = searchInput;
 }
 
-
-function kanjiParser(item) {
+function kanji_parser(item) {
   /* if got kanji, get it with the furigana
   else get the word only
   kanji - the kanji
@@ -67,8 +67,7 @@ function kanjiParser(item) {
   return full_word;
 }
 
-
-function furiganaParser(kana_items) {
+function furigana_parser(kana_items) {
   // get translate and word hiragana for the asked word
   var all_furigana = "";
   for (i = 0; i < kana_items.length; i++) {
@@ -86,6 +85,14 @@ function furiganaParser(kana_items) {
   }
 }
 
+function tansaction_parser(tansaction) {
+  for (var i = 0; i < translation.length; i++) {
+    searchInput_translate += translation[i].getElementsByClassName("eng")[0].innerText;
+    if (sentence_translate.slice(-1) != ";") {
+      searchInput_translate += ";"
+    }
+  }
+}
 
 function get_data() {
   clear_data();
@@ -97,7 +104,7 @@ function get_data() {
     var raw_sentence = entry.getElementsByClassName("ex-dt")[0];
     var found_searched_word = false;
     for (i = 0; i < raw_sentence.children.length; i = i + 1) {
-      var parsedWord = kanjiParser(raw_sentence.children[i]);
+      var parsedWord = kanji_parser(raw_sentence.children[i]);
       // get translate and word hiragana for the asked word
       if (!found_searched_word && searchInput == parsedWord) {
         found_searched_word = true;
@@ -105,19 +112,18 @@ function get_data() {
         setTimeout(function () {
           inline_entry = entry.getElementsByClassName("inline-entry")[0];
           kana_items = inline_entry.getElementsByClassName("kana")[0].getElementsByTagName("ruby");
+
           //get all hiraganas writing for the specific word
-          furiganaParser(kana_items);
+          furigana_parser(kana_items);
+
           //get translation
           translation = inline_entry.getElementsByTagName("dd")[0].getElementsByTagName("ol")[0].children;
-          for (var i = 0; i < translation.length; i++) {
-            searchInput_translate += translation[i].getElementsByClassName("eng")[0].innerText;
-            if (sentence_translate.slice(-1) != ";") {
-              searchInput_translate += ";"
-            }
-          }
+          tansaction_parser(tansaction);
+
+          //get all kanji objects in the inline word
           var allKanji = inline_entry.getElementsByClassName("stlh");
           allKanji[0].click();
-          setTimeout(getKanjiProncAndMeaning, 1600, allKanji, 0);
+          setTimeout(get_kanji_pronc_and_meaning, 1600, allKanji, 0);
         }, 900);
       }
     }
@@ -128,7 +134,7 @@ function get_data() {
   }
 };
 
-function getKanjiProncAndMeaning(allKanji, indexNum) {
+function get_kanji_pronc_and_meaning(allKanji, indexNum) {
   var kanji = allKanji[indexNum].innerText;
   var kanji_pronces = [];
   var kanji_translations = [];
@@ -137,29 +143,27 @@ function getKanjiProncAndMeaning(allKanji, indexNum) {
   var pronces_blocks = inline_entry.getElementsByClassName("kana")[0].getElementsByTagName("ruby");
   var translation_blocks = inline_entry.getElementsByClassName("k-lng-en")[0].getElementsByTagName("b");
 
+  // get all different procnces
   for (i = 0; i < pronces_blocks.length; i++) {
     var pronce = pronces_blocks[i].getElementsByTagName("rb")[0].innerText.split(".")[0];
-    var isAlreadyExsist = false;
     if (!kanji_pronces.includes(pronce)) {
       kanji_pronces.push(pronce);
     }
   }
+
+  // get all trasactions
   for (var i = 0; i < translation_blocks.length; i++) {
     kanji_translations.push(translation_blocks[i].innerText);
   }
-  newline = " \n";
   a_textArea.value += newline + kanji + " - " + kanji_pronces.join("    ") + newline + kanji_translations.join(";  ");
   if (indexNum < allKanji.length) {
     indexNum++;
     allKanji[indexNum].click();
-    setTimeout(getKanjiProncAndMeaning, 1200, allKanji, indexNum);
+    setTimeout(get_kanji_pronc_and_meaning, 1200, allKanji, indexNum);
   }
 }
 
-
-//post results
 function print_results() {
-  newline = " \n";
   q_textArea.value = searchInput + newline + sentence_without_furigana + newline + "בלי פוריגנה";
   s_textArea.value = sentence_with_furigana;
   a_textArea.value = sentence_translate + newline +
@@ -184,21 +188,23 @@ function create_textArea(id, row = 3) {
   return item;
 }
 
-function createDiv(classname, id) {
+
+function create_div(classname, id) {
   item = document.createElement("div");
   item.className = classname;
   item.id = id;
   return item;
 }
+
 q_textArea = create_textArea("anki_question");
 s_textArea = create_textArea("anki_sentence");
 a_textArea = create_textArea("anki_answer", 6);
 
-right_container = createDiv("right-container", "");
+right_container = create_div("right-container", "");
 
-right_container.appendChild(createDiv("row", "div1")).appendChild(q_textArea);
-right_container.appendChild(createDiv("row", "div2")).appendChild(s_textArea);
-right_container.appendChild(createDiv("row", "div3")).appendChild(a_textArea);
+right_container.appendChild(create_div("row", "div1")).appendChild(q_textArea);
+right_container.appendChild(create_div("row", "div2")).appendChild(s_textArea);
+right_container.appendChild(create_div("row", "div3")).appendChild(a_textArea);
 
 document.getElementById("dictPanel").appendChild(right_container);
 
