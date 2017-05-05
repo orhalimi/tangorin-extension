@@ -118,12 +118,12 @@ function get_data() {
 
           //get translation
           translation = inline_entry.getElementsByTagName("dd")[0].getElementsByTagName("ol")[0].children;
-          tansaction_parser(tansaction);
+          tansaction_parser(translation);
 
           //get all kanji objects in the inline word
           var allKanji = inline_entry.getElementsByClassName("stlh");
           allKanji[0].click();
-          setTimeout(get_kanji_pronc_and_meaning, 1600, allKanji, 0);
+          setTimeout(get_kanji_pronc_and_meaning, 1600, allKanji, 0); //1 because starting from the next index
         }, 900);
       }
     }
@@ -156,8 +156,8 @@ function get_kanji_pronc_and_meaning(allKanji, indexNum) {
     kanji_translations.push(translation_blocks[i].innerText);
   }
   a_textArea.value += newline + kanji + " - " + kanji_pronces.join("    ") + newline + kanji_translations.join(";  ");
+  indexNum++;
   if (indexNum < allKanji.length) {
-    indexNum++;
     allKanji[indexNum].click();
     setTimeout(get_kanji_pronc_and_meaning, 1200, allKanji, indexNum);
   }
@@ -175,6 +175,7 @@ function print_results() {
   console.log("sentence translate:" + sentence_translate);
   console.log("without furigana:" + sentence_without_furigana);
   console.log("with furigana:" + sentence_with_furigana);
+  // chrome.runtime.sendMessage({greeting: "hello"});
 
 }
 
