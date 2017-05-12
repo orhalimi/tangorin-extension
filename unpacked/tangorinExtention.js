@@ -175,7 +175,7 @@ function print_results() {
   console.log("sentence translate:" + sentence_translate);
   console.log("without furigana:" + sentence_without_furigana);
   console.log("with furigana:" + sentence_with_furigana);
-  // chrome.runtime.sendMessage({greeting: "hello"});
+  //chrome.runtime.sendMessage({greeting: "hello"});
 
 }
 

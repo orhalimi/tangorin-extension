@@ -15,19 +15,15 @@
 
   },
   "background": {
-    "scripts": ["eventsHandler.js"],
-    "persistent": false
+    "scripts": ["eventsHandler.js"]
   },
   "permissions": ["tabs", "*://*.tangorin.com/examples/*"],
-  "externally_connectable": {
-    "matches": ["*://*.tangorin.com/examples/*"]
-  },
   "content_scripts": [
     {
       "matches": ["*://*.tangorin.com/examples/*"],
       "js": ["tangorinExtention.js"]
         }
-        ],
+    ],
   "author": "Or Halimi"
 
 }
