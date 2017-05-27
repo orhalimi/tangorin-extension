@@ -1,3 +1,5 @@
 //no results will get only the word
-//dinamic popup inside the browser with the text areas -  move the textarea inside the app
 // make the card creator fixable according to user choice
+// put all the css in different json file
+
+// make the popup moveable
