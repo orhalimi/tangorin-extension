@@ -5,9 +5,3 @@ chrome.browserAction.onClicked.addListener(function (activeTab) {
   });
 });
 
-/*chrome.runtime.onMessage.addListener(
-  function (request, sender, sendResponse) {
-      console.log("message");
-return true;
-  }
-);*/

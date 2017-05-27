@@ -1,6 +1,47 @@
 //no results will get only the word
-//dinamic popup inside the browser with the text areas
 // costum card creation
+cssList = {
+  popupCss: `.ex-popup  {
+  width: 28%;
+  background-color: #f9f9eb;
+  position: fixed;
+  right:2%;
+  top:20%;
+  padding: 0px 0px 4px 0px;
+  border: 1px solid silver;
+  border-radius:12px;
+  z-index:5}`,
+
+  closeBtnCss: `.ex-popup a {
+ color: #0060B6;
+ text-decoration: none;
+ float:right;
+ line-height: 25px;
+
+ display:block;
+ margin-right:11px;
+}
+
+.ex-popup a:hover{
+  color: green;
+  text-decoration: none;
+
+}
+.ex-popup a:active{
+  color: red;
+  text-decoration: none;
+}`,
+
+  textareaCss: `.ex-popup textarea{
+  clear:both;
+  display:block;
+  width: 94%;
+  border: 1;
+  margin:  10px auto;
+  padding: 1px;
+  border-radius:4px;
+}`
+};
 
 var entrie = document.getElementsByClassName("entry");
 var entry;
@@ -14,18 +55,23 @@ var sentence_translate;
 var kanji_with_pronce;
 var newline = " \n"; //now line in text area workd only with space
 
-function set_buttons() {
+var popup = document.createElement("div");
+var textarea_counter = 3;
+var textareas_arr = [];
+var popupExist = false;
+var body = document.getElementsByTagName("body")[0];
+
+function create_btns() {
   for (j = 0; j < entrie.length; j++) {
-    btn = document.createElement("button");
+    btn = document.createElement("a");
     btn.className = "entry-menu btn btn-link tangorin-extension";
     btn.style.color = "red";
-    btn.style["margin-top"] = "18px";
-    var searchInput_translate = ""
     i = document.createElement("i");
     i.className = "icon-plus-sign";
     btn.appendChild(i);
+    btn.style.clear ="both"
     btn.addEventListener("click", get_data)
-    entrie[j].appendChild(btn);
+    entrie[j].insertBefore(btn, entrie[j].children[0].nextSibling);
   }
 }
 
@@ -36,6 +82,16 @@ function clear_data() {
   sentence_with_furigana = "";
   sentence_translate = "";
   searchInput_with_furigana = searchInput;
+}
+
+function add_css(css) {
+  var style = document.createElement('style');
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+  document.getElementsByTagName('head')[0].appendChild(style);
 }
 
 function kanji_parser(item) {
@@ -96,6 +152,7 @@ function tansaction_parser(tansaction) {
 
 function get_data() {
   clear_data();
+  popup.style.visibility = "visible";
   entry = this.parentElement;
   if (!searchInput) {
     console.log("please insert something to search");
@@ -129,7 +186,7 @@ function get_data() {
     }
     setTimeout(print_results, 1500);
     if (!found_searched_word) {
-      alert("The search word wasn't found in the sentence. Not all the results are shown")
+      alert("The search word wasn't found in the sentence. Not all the results are shown");
     }
   }
 };
@@ -155,7 +212,7 @@ function get_kanji_pronc_and_meaning(allKanji, indexNum) {
   for (var i = 0; i < translation_blocks.length; i++) {
     kanji_translations.push(translation_blocks[i].innerText);
   }
-  a_textArea.value += newline + kanji + " - " + kanji_pronces.join("    ") + newline + kanji_translations.join(";  ");
+   textareas_arr[2].value += newline + kanji + " - " + kanji_pronces.join("    ") + newline + kanji_translations.join(";  ");
   indexNum++;
   if (indexNum < allKanji.length) {
     allKanji[indexNum].click();
@@ -164,9 +221,9 @@ function get_kanji_pronc_and_meaning(allKanji, indexNum) {
 }
 
 function print_results() {
-  q_textArea.value = searchInput + newline + sentence_without_furigana + newline + "בלי פוריגנה";
-  s_textArea.value = sentence_with_furigana;
-  a_textArea.value = sentence_translate + newline +
+  textareas_arr[0].value = searchInput + newline + sentence_without_furigana + newline + "בלי פוריגנה";
+  textareas_arr[1].value = sentence_with_furigana;
+  textareas_arr[2].value = sentence_translate + newline +
     searchInput_with_furigana + " - " + searchInput_translate + newline;
 
   console.log("searchInput:" + searchInput);
@@ -179,34 +236,86 @@ function print_results() {
 
 }
 
-function create_textArea(id, row = 3) {
-  item = document.createElement("textarea");
-  item.id = id;
-  item.style.margin = "10px 0px 10px 0px"
-  item.cols = 45;
-  item.rows = row;
-  // left_container.appendChild(item);
-  return item;
+function create_popup() {
+  if (!popupExist) {
+    popup.classList.add('ex-popup');
+    popup.style.visibility = "hidden";
+    create_remove_btn();
+    create_textarea();
+    body.appendChild(popup);
+    map_textareas();
+    popupExist = true;
+  }
+}
+
+function create_textarea() {
+  [...Array(textarea_counter).keys()].forEach(function (counter) {
+    var textarea = document.createElement("textarea");
+    textarea.id = "ex-textarea-" + (counter + 1);
+    textarea.rows = 5;
+    popup.appendChild(textarea);
+  });
+}
+
+function create_remove_btn() {
+  var remove_btn = document.createElement("a");
+  remove_btn.innerHTML = "✖";
+  remove_btn.onclick = function () {
+    popupExist = false;
+    popup.style.visibility = "hidden";
+  };
+  popup.appendChild(remove_btn);
+}
+
+function map_textareas() {
+[...Array(textarea_counter).keys()].forEach(function (counter) {
+    textareas_arr.push(document.getElementById("ex-textarea-" + (counter + 1)));
+  });
 }
 
 
-function create_div(classname, id) {
-  item = document.createElement("div");
-  item.className = classname;
-  item.id = id;
-  return item;
+function init() {
+  for (let css in cssList) {
+    add_css(cssList[css]);
+  }
+  create_btns();
+  create_popup();
+
 }
 
-q_textArea = create_textArea("anki_question");
-s_textArea = create_textArea("anki_sentence");
-a_textArea = create_textArea("anki_answer", 6);
+init();
 
-right_container = create_div("right-container", "");
 
-right_container.appendChild(create_div("row", "div1")).appendChild(q_textArea);
-right_container.appendChild(create_div("row", "div2")).appendChild(s_textArea);
-right_container.appendChild(create_div("row", "div3")).appendChild(a_textArea);
 
-document.getElementById("dictPanel").appendChild(right_container);
+//
+//function create_textArea(id, row = 3) {
+//  item = document.createElement("textarea");
+//  item.id = id;
+//  item.style.margin = "10px 0px 10px 0px"
+//  item.cols = 45;
+//  item.rows = row;
+//  // left_container.appendChild(item);
+//  return item;
+//}
 
-set_buttons();
+
+//function create_div(classname, id) {
+//  item = document.createElement("div");
+//  item.className = classname;
+//  item.id = id;
+//  return item;
+//}
+//
+//q_textArea = create_textArea("anki_question");
+//s_textArea = create_textArea("anki_sentence");
+//a_textArea = create_textArea("anki_answer", 6);
+//
+//right_container = create_div("right-container", "");
+//
+//right_container.appendChild(create_div("row", "div1")).appendChild(q_textArea);
+//right_container.appendChild(create_div("row", "div2")).appendChild(s_textArea);
+//right_container.appendChild(create_div("row", "div3")).appendChild(a_textArea);
+//
+//document.getElementById("dictPanel").appendChild(right_container);
+//
+//
