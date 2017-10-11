@@ -20,7 +20,7 @@
     {
       "matches": ["*://*.tangorin.com/examples/*"],
       "js": ["tangorinExtention.js"],
-      "css":["css.css"]
+      "css":["css.css", "tooltips.css"]
         }
     ],
   "author": "Or Halimi"
