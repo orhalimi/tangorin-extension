@@ -1,7 +1,7 @@
 chrome.browserAction.onClicked.addListener(function (activeTab) {
-  var newURL = "http://tangorin.com/examples/";
+  var uri = "http://tangorin.com/examples/";
   chrome.tabs.create({
-    url: newURL
+    url: uri
   });
 });
 

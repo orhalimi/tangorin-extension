@@ -1,59 +1,12 @@
+//TODO:
 //no results will get only the word
 // costum card creation
-cssList = {
-  popupCss: `.ex-popup  {
-  width: 28%;
-  background-color: #f9f9eb;
-  position: fixed;
-  right:2%;
-  top:20%;
-  padding: 0px 0px 4px 0px;
-  border: 1px solid silver;
-  border-radius:12px;
-  z-index:5}`,
 
-  closeBtnCss: `.ex-popup a {
- color: #0060B6;
- text-decoration: none;
- float:right;
- line-height: 25px;
+let entrie = document.getElementsByClassName("entry");
+let entry, searchInput, searchInput_with_furigana, searchInput_translate;
+let sentence_without_furigana, sentence_with_furigana, sentence_translate, kanji_with_pronce;
 
- display:block;
- margin-right:11px;
-}
-
-.ex-popup a:hover{
-  color: green;
-  text-decoration: none;
-
-}
-.ex-popup a:active{
-  color: red;
-  text-decoration: none;
-}`,
-
-  textareaCss: `.ex-popup textarea{
-  clear:both;
-  display:block;
-  width: 94%;
-  border: 1;
-  margin:  10px auto;
-  padding: 1px;
-  border-radius:4px;
-}`
-};
-
-var entrie = document.getElementsByClassName("entry");
-var entry;
-var searchInput;
-var searchInput_with_furigana;
-var searchInput_translate;
-
-var sentence_without_furigana;
-var sentence_with_furigana;
-var sentence_translate;
-var kanji_with_pronce;
-var newline = " \n"; //now line in text area workd only with space
+const newline = " \n"; //now line in text area workd only with space
 
 var popup = document.createElement("div");
 var textarea_counter = 3;
@@ -82,16 +35,6 @@ function clear_data() {
   sentence_with_furigana = "";
   sentence_translate = "";
   searchInput_with_furigana = searchInput;
-}
-
-function add_css(css) {
-  var style = document.createElement('style');
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-  document.getElementsByTagName('head')[0].appendChild(style);
 }
 
 function kanji_parser(item) {
@@ -275,47 +218,10 @@ function map_textareas() {
 
 
 function init() {
-  for (let css in cssList) {
-    add_css(cssList[css]);
-  }
   create_btns();
   create_popup();
-
 }
 
 init();
 
 
-
-//
-//function create_textArea(id, row = 3) {
-//  item = document.createElement("textarea");
-//  item.id = id;
-//  item.style.margin = "10px 0px 10px 0px"
-//  item.cols = 45;
-//  item.rows = row;
-//  // left_container.appendChild(item);
-//  return item;
-//}
-
-
-//function create_div(classname, id) {
-//  item = document.createElement("div");
-//  item.className = classname;
-//  item.id = id;
-//  return item;
-//}
-//
-//q_textArea = create_textArea("anki_question");
-//s_textArea = create_textArea("anki_sentence");
-//a_textArea = create_textArea("anki_answer", 6);
-//
-//right_container = create_div("right-container", "");
-//
-//right_container.appendChild(create_div("row", "div1")).appendChild(q_textArea);
-//right_container.appendChild(create_div("row", "div2")).appendChild(s_textArea);
-//right_container.appendChild(create_div("row", "div3")).appendChild(a_textArea);
-//
-//document.getElementById("dictPanel").appendChild(right_container);
-//
-//
