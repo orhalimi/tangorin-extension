@@ -1,16 +1,16 @@
 {
   "manifest_version": 2,
   "name": "Tangorin - Anki card Creator (Unofficial)",
-  "description": "This extension display the data in the example page in a way which will fit to japanese anki cards",
-  "version": "0.9.5",
-  "version_name": "0.9.5 Alpha",
+  "description": "Display the data in the example page in a friendly format for Anki",
+  "version": "0.9.6",
+  "version_name": "0.9.6 Alpha",
   "icons": {
     "128": "icon128.png",
     "48": "icon48.png"
   },
   "browser_action": {
     "default_icon": "icon19.png",
-    "default_title": "Tangorin extention is active"
+    "default_title": "Go to Tangorin"
   },
   "background": {
     "scripts": ["eventsHandler.js"]
